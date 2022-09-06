@@ -1,0 +1,5 @@
+/.idea
+/docker/mysql/data/
+/docker/nginx/logs/
+.env
+/src/.composer/
