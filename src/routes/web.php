@@ -23,9 +23,6 @@ Route::get('/', [App\Http\Controllers\IndexController::class, 'index'])->name('i
 // Страница с токеном
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// Обработка переадресации
-Route::get('/redirect', [App\Http\Controllers\LinkController::class, 'redirect'])->name('redirect');
-
 // Создание ссылки
 Route::post('/make', [\App\Http\Controllers\LinkController::class, 'makeLink'])->name('makeLink');
 

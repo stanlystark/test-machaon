@@ -13,11 +13,14 @@ class AuthTokenApiMiddleware
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): \Illuminate\Http\JsonResponse
     {
-        if (User::checkToken($request->input('access_token'))) return $next($request);
-        return response()->json('fail');
+        if (User::checkToken($request->input('access_token'))) {
+            return $next($request);
+        }
+
+        return response()->json('fail', 401);
     }
 }

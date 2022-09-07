@@ -18,19 +18,25 @@ class LinkAdminController extends Controller
     // Информация по коду
     public function getLink(CheckCodeRequest $request)
     {
-        return response()->json(Link::getByCodeAdmin($request->all()));
+        $validated = $request->validated();
+
+        return response()->json(Link::getByCodeAdmin($validated));
     }
 
     // Обновление ссылки
     public function updateLink(CheckCodeRequest $request)
     {
-        return response()->json(Link::updateLink($request->all()));
+        $validated = $request->validated();
+
+        return response()->json(Link::updateLink($validated));
     }
 
     // Удаление ссылки
     public function removeLink(CheckCodeRequest $request)
     {
-        return response()->json(Link::removeLink($request->input('code')));
+        $validated = $request->validated();
+
+        return response()->json(Link::removeLink($validated['code']));
     }
 
     // Список переходов

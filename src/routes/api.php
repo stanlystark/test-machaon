@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,22 +14,21 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Создать короткую ссылку
-Route::post('/short', [\App\Http\Controllers\API\LinkUserController::class, 'makeLink']);
+Route::put('/link', [\App\Http\Controllers\API\LinkUserController::class, 'makeLink']);
 // Получить полный адрес короткой ссылки
-Route::post('/link', [\App\Http\Controllers\API\LinkUserController::class, 'getLink']);
+Route::get('/link', [\App\Http\Controllers\API\LinkUserController::class, 'getLink']);
 
-// token
-Route::middleware('token')->prefix('admin')->group(function() {
+Route::middleware('token')->prefix('admin')->group(function () {
     // Получить список всех созданных ссылок
-    Route::post('/list', [\App\Http\Controllers\API\LinkAdminController::class, 'getLinks']);
+    Route::get('/links', [\App\Http\Controllers\API\LinkAdminController::class, 'getLinks']);
     // Получить данные конкретной ссылки
-    Route::post('/link', [\App\Http\Controllers\API\LinkAdminController::class, 'getLink']);
+    Route::get('/link', [\App\Http\Controllers\API\LinkAdminController::class, 'getLink']);
     // Изменить конкретную ссылку
-    Route::post('/update', [\App\Http\Controllers\API\LinkAdminController::class, 'updateLink']);
+    Route::patch('/link', [\App\Http\Controllers\API\LinkAdminController::class, 'updateLink']);
     // Удалить ссылку
-    Route::post('/remove', [\App\Http\Controllers\API\LinkAdminController::class, 'removeLink']);
+    Route::delete('/link', [\App\Http\Controllers\API\LinkAdminController::class, 'removeLink']);
     // Получить список всех переходов по ссылкам
-    Route::post('/transitions', [\App\Http\Controllers\API\LinkAdminController::class, 'getTransitions']);
+    Route::get('/transitions', [\App\Http\Controllers\API\LinkAdminController::class, 'getTransitions']);
 });
 
 // Если нет маршрута - ошибка

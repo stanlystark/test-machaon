@@ -11,14 +11,25 @@ class LinkStatistic extends Model
 {
     use HasFactory;
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'link_id',
         'ip',
-        'agent'
+        'agent',
     ];
 
-    // Сбор информации о пользователе
-    public static function collectData($id, $ip, $agent)
+
+    /**
+     * Сбор информации о пользователе
+     *
+     * @param $id
+     * @param $ip
+     * @param $agent
+     * @return void
+     */
+    public static function collectData($id, $ip, $agent): void
     {
         try {
             $data = new LinkStatistic();
@@ -31,27 +42,48 @@ class LinkStatistic extends Model
         }
     }
 
-    // Получение статистики по ссылке
-    public static function getStats($id, $data = [])
+    /**
+     * Получение статистики по ссылке
+     *
+     * @param $id
+     * @param $data
+     * @return mixed
+     */
+    public static function getStats($id, $data = []): mixed
     {
-        if (!empty($data)) {
+        if (! empty($data)) {
             return self::where('link_id', $id)->where(function ($query) use ($data) {
-                if (isset($data['from'])) $query->where('created_at', '>', Carbon::createFromTimestamp($data['from'])->toDateTimeString());
-                if (isset($data['to'])) $query->where('created_at', '<', Carbon::createFromTimestamp($data['to'])->toDateTimeString());
+                if (isset($data['from'])) {
+                    $query->where('created_at', '>', Carbon::createFromTimestamp($data['from'])->toDateTimeString());
+                }
+                if (isset($data['to'])) {
+                    $query->where('created_at', '<', Carbon::createFromTimestamp($data['to'])->toDateTimeString());
+                }
             })->select('ip', 'agent')->get();
         }
+
         return self::select('ip', 'agent')->get();
     }
 
-    // Получение всей статистики
-    public static function getAll($data = [])
+    /**
+     * Получение всей статистики
+     *
+     * @param $data
+     * @return mixed
+     */
+    public static function getAll($data = []): mixed
     {
-        if (!empty($data)) {
+        if (! empty($data)) {
             return self::where(function ($query) use ($data) {
-                if (isset($data['from'])) $query->where('created_at', '>', Carbon::createFromTimestamp($data['from'])->toDateTimeString());
-                if (isset($data['to'])) $query->where('created_at', '<', Carbon::createFromTimestamp($data['to'])->toDateTimeString());
+                if (isset($data['from'])) {
+                    $query->where('created_at', '>', Carbon::createFromTimestamp($data['from'])->toDateTimeString());
+                }
+                if (isset($data['to'])) {
+                    $query->where('created_at', '<', Carbon::createFromTimestamp($data['to'])->toDateTimeString());
+                }
             })->select('ip', 'agent')->get();
         }
+
         return self::select('ip', 'agent')->get();
     }
 }

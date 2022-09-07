@@ -3,41 +3,64 @@
 namespace App\Models;
 
 use App\Casts\LinkTargetCast;
+use App\Models\Link\Generator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class Link extends Model
 {
     use HasFactory;
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'code',
-        'target'
+        'target',
     ];
 
-    // Преобразование из закодированного состояния в обычное и обратно
+
+    /**
+     * Преобразование из закодированного состояния в обычное и обратно
+     *
+     * @var string[]
+     */
     protected $casts = [
-        'target' => LinkTargetCast::class
+        'target' => LinkTargetCast::class,
     ];
 
-    // Получение данных для переадресации
-    public static function getUrl($code)
+    /**
+     * Получение данных для переадресации
+     *
+     * @param $ip
+     * @param $agent
+     * @param $code
+     * @return string
+     */
+    public static function getUrl($ip, $agent, $code): string
     {
         $link = self::where('code', $code)->first();
 
         if ($link) {
-            return route("redirect", ['url' => urlencode($link->target), 'id' => $link->id]);
+            // Сбор информации о пользователе
+            LinkStatistic::collectData($link->id, $ip, $agent);
+            // Возвращаем ссылку
+            return $link->target;
         }
-        return route("index");
 
+        return route('index');
     }
 
-    // Создание ссылки
-    public static function getShortCode($url)
+    /**
+     * Создание ссылки
+     *
+     * @param $url
+     * @return string
+     */
+    public static function getShortCode($url): string
     {
-        $code = self::generateCode(8);
+        $code = Generator::generateCode(8);
 
         $link = new Link();
         $link->code = $code;
@@ -47,39 +70,50 @@ class Link extends Model
         return $code;
     }
 
-    // Генерация кода
-    private static function generateCode($len)
-    {
-        $code = Str::random($len);
-        if (self::where('code', $code)->exists()) {
-            return self::generateCode($len);
-        }
-        return $code;
-    }
-
-    // Ссылка по коду
-    public static function getByCode($code)
+    /**
+     * Возвращение ссылки по коду
+     *
+     * @param $code
+     * @return array
+     */
+    public static function getByCode($code): array
     {
         $link = self::where('code', $code)->first();
+
         return [
-            'target' => $link->target
+            'target' => $link->target,
         ];
     }
 
-    // Список ссылок
-    public static function getLinks(array $data)
+    /**
+     * Список ссылок
+     *
+     * @param array $data
+     * @return mixed
+     */
+    public static function getLinks(array $data): mixed
     {
-        if (!empty($data)) {
+        if (! empty($data)) {
             return self::where(function ($query) use ($data) {
-                if (isset($data['from'])) $query->where('created_at', '>', Carbon::createFromTimestamp($data['from'])->toDateTimeString());
-                if (isset($data['to'])) $query->where('created_at', '<', Carbon::createFromTimestamp($data['to'])->toDateTimeString());
+                if (isset($data['from'])) {
+                    $query->where('created_at', '>', Carbon::createFromTimestamp($data['from'])->toDateTimeString());
+                }
+                if (isset($data['to'])) {
+                    $query->where('created_at', '<', Carbon::createFromTimestamp($data['to'])->toDateTimeString());
+                }
             })->select('code', 'target')->get();
         }
+
         return self::select('code', 'target')->get();
     }
 
-    // Информация о ссылке по коду
-    public static function getByCodeAdmin($data)
+    /**
+     * Информация о ссылке по коду
+     *
+     * @param $data
+     * @return array
+     */
+    public static function getByCodeAdmin($data): array
     {
         $link = self::where('code', $data['code'])->first();
 
@@ -88,36 +122,56 @@ class Link extends Model
         return [
             'target' => $link->target,
             'count' => count($stats),
-            'transitions' => $stats
+            'transitions' => $stats,
         ];
     }
 
-    // Обновление ссылки
-    public static function updateLink($data)
+
+    /**
+     * Обновление ссылки
+     *
+     * @param $data
+     * @return string
+     */
+    public static function updateLink($data): string
     {
         if (isset($data['code']) && isset($data['target'])) {
             $link = self::where('code', $data['code'])->first();
 
             self::where('id', $link->id)->update([
-                'target' => $data['target']
+                'target' => $data['target'],
             ]);
 
             return 'success';
         }
+
         return 'fail';
     }
 
-    // Удаление ссылки
-    public static function removeLink($code)
+
+    /**
+     * Удаление ссылки
+     *
+     * @param $code
+     * @return string
+     */
+    public static function removeLink($code): string
     {
         $link = self::where('code', $code)->first();
         LinkStatistic::where('link_id', $link->id)->delete();
         self::where('id', $link->id)->delete();
+
         return 'success';
     }
 
-    // Получение списка переходов
-    public static function getTransitions($data)
+
+    /**
+     * Получение списка переходов
+     *
+     * @param $data
+     * @return mixed
+     */
+    public static function getTransitions($data): mixed
     {
         return LinkStatistic::getAll($data);
     }

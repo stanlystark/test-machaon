@@ -15,11 +15,12 @@ return new class extends Migration
     {
         Schema::create('link_statistics', function (Blueprint $table) {
             $table->id();
-            $table->integer('link_id');
+            $table->foreignIdFor(\App\Models\Link::class)->constrained();
             $table->string('ip');
             $table->string('agent');
             $table->timestamps();
         });
+
     }
 
     /**

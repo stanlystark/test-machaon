@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
-use \Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\Response;
 
 class CheckCodeRequest extends FormRequest
 {
@@ -32,7 +31,9 @@ class CheckCodeRequest extends FormRequest
         ];
     }
 
-
+    /**
+     * @return string[]
+     */
     public function messages()
     {
         return [
@@ -43,6 +44,6 @@ class CheckCodeRequest extends FormRequest
 
     public function failedValidation(Validator $validator)
     {
-        return throw new ValidationException($validator, (new JsonResponse($validator->errors())));
+        return throw new ValidationException($validator, (new JsonResponse(['errors' => $validator->errors()])));
     }
 }
