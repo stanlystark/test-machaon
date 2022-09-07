@@ -22,7 +22,7 @@ class LinkUserController extends Controller
     /**
      * Создаем ссылку
      *
-     * @param StoreLinkRequest $request
+     * @param  StoreLinkRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function makeLink(StoreLinkRequest $request)
@@ -40,7 +40,7 @@ class LinkUserController extends Controller
     /**
      * Получаем информацию по коду
      *
-     * @param CheckCodeRequest $request
+     * @param  CheckCodeRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function getLink(CheckCodeRequest $request)

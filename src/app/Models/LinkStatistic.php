@@ -20,7 +20,6 @@ class LinkStatistic extends Model
         'agent',
     ];
 
-
     /**
      * Сбор информации о пользователе
      *

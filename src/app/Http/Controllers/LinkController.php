@@ -11,7 +11,7 @@ class LinkController extends Controller
     /**
      * Обработка кода
      *
-     * @param Request $request
+     * @param  Request  $request
      * @param $code
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -23,7 +23,7 @@ class LinkController extends Controller
     /**
      * Создание ссылки
      *
-     * @param StoreLinkRequest $request
+     * @param  StoreLinkRequest  $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function makeLink(StoreLinkRequest $request)

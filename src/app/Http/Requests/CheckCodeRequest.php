@@ -37,7 +37,7 @@ class CheckCodeRequest extends FormRequest
     public function messages()
     {
         return [
-            'code.required' => 'Требуется ссылка',
+            'code.required' => 'Требуется код',
             'code.exists' => 'Кода не существует :(',
         ];
     }

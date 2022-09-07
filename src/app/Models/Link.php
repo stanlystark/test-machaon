@@ -20,7 +20,6 @@ class Link extends Model
         'target',
     ];
 
-
     /**
      * Преобразование из закодированного состояния в обычное и обратно
      *
@@ -88,7 +87,7 @@ class Link extends Model
     /**
      * Список ссылок
      *
-     * @param array $data
+     * @param  array  $data
      * @return mixed
      */
     public static function getLinks(array $data): mixed
@@ -126,7 +125,6 @@ class Link extends Model
         ];
     }
 
-
     /**
      * Обновление ссылки
      *
@@ -148,7 +146,6 @@ class Link extends Model
         return 'fail';
     }
 
-
     /**
      * Удаление ссылки
      *
@@ -163,7 +160,6 @@ class Link extends Model
 
         return 'success';
     }
-
 
     /**
      * Получение списка переходов
